@@ -56,13 +56,33 @@ BOOL CPaintMFCDoc::OnNewDocument()
 
 void CPaintMFCDoc::Serialize(CArchive& ar)
 {
+	INT_PTR num = 0;
 	if (ar.IsStoring())
 	{
 		// TODO: add storing code here
+		num = m_rectangles.GetCount();
+		ar << num;
+		for (int i = 0; i < num; i++) {
+			ar << m_rectangles[i].x;
+			ar << m_rectangles[i].y;
+			ar << m_rectangles[i].width;
+			ar << m_rectangles[i].height;
+		}
 	}
 	else
 	{
 		// TODO: add loading code here
+		ar >> num;
+		for (int i = 0; i < num; i++) {
+			CRectangle r;
+			ar >> r.x;
+			ar >> r.y;
+			ar >> r.width;
+			ar >> r.height;
+		
+			this->m_rectangles.Add(r);
+		}
+
 	}
 }
 
@@ -136,3 +156,12 @@ void CPaintMFCDoc::Dump(CDumpContext& dc) const
 
 
 // CPaintMFCDoc commands
+
+
+void CPaintMFCDoc::DeleteContents()
+{
+	// TODO: Add your specialized code here and/or call the base class
+	this->m_rectangles.RemoveAll();
+
+	CDocument::DeleteContents();
+}

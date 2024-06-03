@@ -4,7 +4,7 @@
 
 
 #pragma once
-
+#include "CRectangle.h"
 
 class CPaintMFCDoc : public CDocument
 {
@@ -14,7 +14,7 @@ protected: // create from serialization only
 
 // Attributes
 public:
-
+	CArray<CRectangle> m_rectangles;
 // Operations
 public:
 
@@ -45,4 +45,6 @@ protected:
 	// Helper function that sets search content for a Search Handler
 	void SetSearchContent(const CString& value);
 #endif // SHARED_HANDLERS
+public:
+	virtual void DeleteContents();
 };
