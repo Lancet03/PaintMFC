@@ -14,6 +14,7 @@
 #include "PaintMFCView.h"
 
 #include "CRectangle.h"
+#include "CCircle.h"
 #include "CFigure.h"
 
 #include <algorithm>
@@ -64,6 +65,9 @@ void CPaintMFCView::OnDraw(CDC* pDC)
 	if (!pDoc)
 		return;
 
+	pDC->TextOut(10, 10, L"R - Прямоугольник");
+	pDC->TextOut(10, 30, L"C - Элипс");
+
 	// TODO: add draw code for native data here
 	for (int i = 0; i < pDoc->m_figures.GetCount(); i++) {
 		CPen pen;
@@ -75,7 +79,6 @@ void CPaintMFCView::OnDraw(CDC* pDC)
 		}
 
 		auto r = pDoc->m_figures.GetAt(i);
-		/*pDC->Rectangle(r->x, r->y, r->x + r->width, r->y + r->height);*/
 		r->DrawSelf(pDC);
 
 		if (oldPen != NULL) {
@@ -124,11 +127,18 @@ void CPaintMFCView::OnLButtonDown(UINT nFlags, CPoint point)
 	if (figNum > -1) {
 		this->m_dragNumber = figNum;
 		this->figureInProgress = pDoc->m_figures[figNum];
-		/*this->figureInProgress->x = point.x;
-		this->figureInProgress->y = point.y;*/
+		m_initialCursorPos = point;
+		m_initialFigureX = figureInProgress->x;
+		m_initialFigureY = figureInProgress->y;
 	}
 	else {
-		this->figureInProgress = new CRectangle();
+		if (this->figureType == 'R') {
+			this->figureInProgress = new CRectangle();
+		}
+		else if (this->figureType == 'C') {
+			this->figureInProgress = new CCircle();
+		}
+
 		this->figureInProgress->x = point.x;
 		this->figureInProgress->y = point.y;
 		this->m_bDrawInProgress = TRUE;
@@ -175,17 +185,14 @@ void CPaintMFCView::OnMouseMove(UINT nFlags, CPoint point)
 	}
 
 	if (this->m_dragNumber > -1) {
-		int offsetX = point.x - this->figureInProgress->x;
-		int offsetY = point.y - this->figureInProgress->y;
-		/*this->figureInProgress->x = point.x;
-		this->figureInProgress->y = point.y;*/
+		int offsetX = point.x - m_initialCursorPos.x;
+		int offsetY = point.y - m_initialCursorPos.y;
 
 		auto pDoc = GetDocument();
 		CFigure* r = pDoc->m_figures[this->m_dragNumber];
-		r->x += offsetX;
-		r->y += offsetY;
+		r->x = this->m_initialFigureX + offsetX;
+		r->y = this->m_initialFigureY + offsetY;
 
-		/*pDoc->m_figures.SetAt(m_dragNumber, r);*/
 		InvalidateRect(NULL);
 	}
 
@@ -231,6 +238,13 @@ void CPaintMFCView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 		this->m_selected = -1;
 		delete fig;
 		Invalidate();
+	}
+
+	if (nChar == 'R') {
+		this->figureType = 'R';
+	}
+	else if (nChar == 'C') {
+		this->figureType = 'C';
 	}
 
 	CView::OnKeyUp(nChar, nRepCnt, nFlags);

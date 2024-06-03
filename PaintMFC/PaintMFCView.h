@@ -36,7 +36,10 @@ protected:
 	int FindFigure(CPoint point);
 	int m_dragNumber = -1;
 	int m_selected = -1;
-	
+	CPoint m_initialCursorPos;
+	int m_initialFigureX;
+	int m_initialFigureY;
+	char figureType = 'R';
 	CFigure* figureInProgress;
 	BOOL m_bDrawInProgress = FALSE;
 

@@ -2,6 +2,7 @@
 
 class CFigure {
 public:
+	char figureType;
 	int x, y;
 	int width, height;
 

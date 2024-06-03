@@ -1,8 +1,8 @@
 #pragma once
 #include "CFigure.h"
 
-class CRectangle : public CFigure {
-	char figureType = 'R';
+class CCircle : public CFigure {
+	char figureType = 'C';
 	bool PtInFig(int x, int y) override;
 	void DrawSelf(CDC* pDC) override;
 };
