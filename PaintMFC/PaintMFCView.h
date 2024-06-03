@@ -1,0 +1,48 @@
+
+// PaintMFCView.h : interface of the CPaintMFCView class
+//
+
+#pragma once
+
+
+class CPaintMFCView : public CView
+{
+protected: // create from serialization only
+	CPaintMFCView() noexcept;
+	DECLARE_DYNCREATE(CPaintMFCView)
+
+// Attributes
+public:
+	CPaintMFCDoc* GetDocument() const;
+
+// Operations
+public:
+
+// Overrides
+public:
+	virtual void OnDraw(CDC* pDC);  // overridden to draw this view
+	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+protected:
+
+// Implementation
+public:
+	virtual ~CPaintMFCView();
+#ifdef _DEBUG
+	virtual void AssertValid() const;
+	virtual void Dump(CDumpContext& dc) const;
+#endif
+
+protected:
+
+// Generated message map functions
+protected:
+	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+};
+
+#ifndef _DEBUG  // debug version in PaintMFCView.cpp
+inline CPaintMFCDoc* CPaintMFCView::GetDocument() const
+   { return reinterpret_cast<CPaintMFCDoc*>(m_pDocument); }
+#endif
+
