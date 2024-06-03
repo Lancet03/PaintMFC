@@ -4,7 +4,7 @@
 
 
 #pragma once
-#include "CRectangle.h"
+#include "CFigure.h"
 
 class CPaintMFCDoc : public CDocument
 {
@@ -14,7 +14,7 @@ protected: // create from serialization only
 
 // Attributes
 public:
-	CArray<CRectangle> m_rectangles;
+	CArray<CFigure*> m_figures;
 // Operations
 public:
 

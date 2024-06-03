@@ -1,6 +1,7 @@
 #pragma once
+#include "CFigure.h"
 
-struct CRectangle {
-	int x, y;
-	int width, height;
+class CRectangle : public CFigure {
+	bool PtInFig(int x, int y) override;
+	void DrawSelf(CDC* pDC) override;
 };

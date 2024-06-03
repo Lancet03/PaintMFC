@@ -3,7 +3,7 @@
 //
 
 #pragma once
-
+#include "CFigure.h"
 
 class CPaintMFCView : public CView
 {
@@ -36,7 +36,8 @@ protected:
 	int FindFigure(CPoint point);
 	int m_dragNumber = -1;
 	int m_selected = -1;
-	CRectangle rectInProgress;
+	
+	CFigure* figureInProgress;
 	BOOL m_bDrawInProgress = FALSE;
 
 // Generated message map functions

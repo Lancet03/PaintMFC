@@ -14,6 +14,7 @@
 #include "PaintMFCView.h"
 
 #include "CRectangle.h"
+#include "CFigure.h"
 
 #include <algorithm>
 
@@ -64,7 +65,7 @@ void CPaintMFCView::OnDraw(CDC* pDC)
 		return;
 
 	// TODO: add draw code for native data here
-	for (int i = 0; i < pDoc->m_rectangles.GetCount(); i++) {
+	for (int i = 0; i < pDoc->m_figures.GetCount(); i++) {
 		CPen pen;
 		CPen* oldPen = NULL;
 
@@ -73,8 +74,9 @@ void CPaintMFCView::OnDraw(CDC* pDC)
 			oldPen = pDC->SelectObject(&pen);
 		}
 
-		auto r = pDoc->m_rectangles.GetAt(i);
-		pDC->Rectangle(r.x, r.y, r.x + r.width, r.y + r.height);
+		auto r = pDoc->m_figures.GetAt(i);
+		/*pDC->Rectangle(r->x, r->y, r->x + r->width, r->y + r->height);*/
+		r->DrawSelf(pDC);
 
 		if (oldPen != NULL) {
 			pDC->SelectObject(oldPen);
@@ -83,8 +85,7 @@ void CPaintMFCView::OnDraw(CDC* pDC)
 	}
 
 	if (this->m_bDrawInProgress) {
-		pDC->Rectangle(this->rectInProgress.x, this->rectInProgress.y, this->rectInProgress.x + this->rectInProgress.width, this->rectInProgress.y + this->rectInProgress.height);
-
+		this->figureInProgress->DrawSelf(pDC);
 	}
 }
 
@@ -122,12 +123,14 @@ void CPaintMFCView::OnLButtonDown(UINT nFlags, CPoint point)
 	int figNum = this->FindFigure(point);
 	if (figNum > -1) {
 		this->m_dragNumber = figNum;
-		this->rectInProgress.x = point.x;
-		this->rectInProgress.y = point.y;
+		this->figureInProgress = pDoc->m_figures[figNum];
+		/*this->figureInProgress->x = point.x;
+		this->figureInProgress->y = point.y;*/
 	}
 	else {
-		this->rectInProgress.x = point.x;
-		this->rectInProgress.y = point.y;
+		this->figureInProgress = new CRectangle();
+		this->figureInProgress->x = point.x;
+		this->figureInProgress->y = point.y;
 		this->m_bDrawInProgress = TRUE;
 	}
 
@@ -140,18 +143,20 @@ void CPaintMFCView::OnLButtonUp(UINT nFlags, CPoint point)
 	// TODO: Add your message handler code here and/or call default
 	if (this->m_dragNumber > -1) {
 		this->m_dragNumber = -1;
+		this->figureInProgress = nullptr;
 	}
 
 	if (this->m_bDrawInProgress) {
-		this->rectInProgress.width = point.x - this->rectInProgress.x;
-		this->rectInProgress.height = point.y - this->rectInProgress.y;
+		this->figureInProgress->width = point.x - this->figureInProgress->x;
+		this->figureInProgress->height = point.y - this->figureInProgress->y;
 
 
 		auto pDoc = GetDocument();
-		pDoc->m_rectangles.Add(this->rectInProgress);
+		pDoc->m_figures.Add(this->figureInProgress);
 
 		pDoc->SetModifiedFlag(1);
 		this->m_bDrawInProgress = FALSE;
+		this->figureInProgress = nullptr;
 	}
 
 
@@ -164,23 +169,23 @@ void CPaintMFCView::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: Add your message handler code here and/or call default
 	if (this->m_bDrawInProgress) {
-		this->rectInProgress.width = point.x - this->rectInProgress.x;
-		this->rectInProgress.height = point.y - this->rectInProgress.y;
+		this->figureInProgress->width = point.x - this->figureInProgress->x;
+		this->figureInProgress->height = point.y - this->figureInProgress->y;
 		InvalidateRect(NULL);
 	}
 
 	if (this->m_dragNumber > -1) {
-		int offsetX = point.x - this->rectInProgress.x;
-		int offsetY = point.y - this->rectInProgress.y;
-		this->rectInProgress.x = point.x;
-		this->rectInProgress.y = point.y;
+		int offsetX = point.x - this->figureInProgress->x;
+		int offsetY = point.y - this->figureInProgress->y;
+		/*this->figureInProgress->x = point.x;
+		this->figureInProgress->y = point.y;*/
 
 		auto pDoc = GetDocument();
-		CRectangle r = pDoc->m_rectangles[this->m_dragNumber];
-		r.x += offsetX;
-		r.y += offsetY;
+		CFigure* r = pDoc->m_figures[this->m_dragNumber];
+		r->x += offsetX;
+		r->y += offsetY;
 
-		pDoc->m_rectangles.SetAt(m_dragNumber, r);
+		/*pDoc->m_figures.SetAt(m_dragNumber, r);*/
 		InvalidateRect(NULL);
 	}
 
@@ -189,21 +194,8 @@ void CPaintMFCView::OnMouseMove(UINT nFlags, CPoint point)
 
 int CPaintMFCView::FindFigure(CPoint point) {
 	auto pDoc = GetDocument();
-	for (int i = (pDoc->m_rectangles.GetCount() - 1); i >= 0; i--) {
-		RECT r;
-		r.left = pDoc->m_rectangles[i].x;
-		r.right = pDoc->m_rectangles[i].x + pDoc->m_rectangles[i].width;
-		r.top = pDoc->m_rectangles[i].y;
-		r.bottom = pDoc->m_rectangles[i].y + pDoc->m_rectangles[i].height;
-
-		if (r.left > r.right) {
-			std::swap(r.left, r.right);
-		}
-		if (r.top > r.bottom) {
-			std::swap(r.top, r.bottom);
-		}
-
-		if (PtInRect(&r, point)) {
+	for (int i = (pDoc->m_figures.GetCount() - 1); i >= 0; i--) {
+		if (pDoc->m_figures[i]->PtInFig(point.x, point.y)) {
 			return i;
 		}
 	}
@@ -233,9 +225,11 @@ void CPaintMFCView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 	// TODO: Add your message handler code here and/or call default
 	if ((this->m_selected > -1) && (nChar == VK_DELETE)) {
 		auto pDoc = GetDocument();
-		pDoc->m_rectangles.RemoveAt(m_selected);
+		CFigure* fig = pDoc->m_figures[m_selected];
+		pDoc->m_figures.RemoveAt(m_selected);
 		pDoc->SetModifiedFlag();
 		this->m_selected = -1;
+		delete fig;
 		Invalidate();
 	}
 
