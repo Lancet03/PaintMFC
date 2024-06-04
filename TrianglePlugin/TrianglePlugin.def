@@ -1,0 +1,8 @@
+; TrianglePlugin.def : Declares the module parameters for the DLL.
+
+LIBRARY TrianglePlugin
+
+EXPORTS
+    GetPluginFigureName
+    GetPluginFigure
+    GetPluginControlButton

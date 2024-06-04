@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CirclePlugin", "CirclePlugi
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RectanglePlugin", "RectanglePlugin\RectanglePlugin.vcxproj", "{A36604BA-7E23-48D2-9C28-B2DDD420EA24}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TrianglePlugin", "TrianglePlugin\TrianglePlugin.vcxproj", "{22B72AE0-B2F2-4B52-92E8-D6EA158CCEB7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -41,6 +43,14 @@ Global
 		{A36604BA-7E23-48D2-9C28-B2DDD420EA24}.Release|x64.Build.0 = Release|x64
 		{A36604BA-7E23-48D2-9C28-B2DDD420EA24}.Release|x86.ActiveCfg = Release|Win32
 		{A36604BA-7E23-48D2-9C28-B2DDD420EA24}.Release|x86.Build.0 = Release|Win32
+		{22B72AE0-B2F2-4B52-92E8-D6EA158CCEB7}.Debug|x64.ActiveCfg = Debug|x64
+		{22B72AE0-B2F2-4B52-92E8-D6EA158CCEB7}.Debug|x64.Build.0 = Debug|x64
+		{22B72AE0-B2F2-4B52-92E8-D6EA158CCEB7}.Debug|x86.ActiveCfg = Debug|Win32
+		{22B72AE0-B2F2-4B52-92E8-D6EA158CCEB7}.Debug|x86.Build.0 = Debug|Win32
+		{22B72AE0-B2F2-4B52-92E8-D6EA158CCEB7}.Release|x64.ActiveCfg = Release|x64
+		{22B72AE0-B2F2-4B52-92E8-D6EA158CCEB7}.Release|x64.Build.0 = Release|x64
+		{22B72AE0-B2F2-4B52-92E8-D6EA158CCEB7}.Release|x86.ActiveCfg = Release|Win32
+		{22B72AE0-B2F2-4B52-92E8-D6EA158CCEB7}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

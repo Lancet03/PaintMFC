@@ -188,7 +188,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\includes\CFigure.h" />
-    <ClInclude Include="CTriangle.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="PaintMFC.h" />
@@ -200,7 +199,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\includes\CFigure.cpp" />
-    <ClCompile Include="CTriangle.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="PaintMFC.cpp" />
     <ClCompile Include="PaintMFCDoc.cpp" />
