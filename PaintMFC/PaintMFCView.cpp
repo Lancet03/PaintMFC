@@ -19,11 +19,16 @@
 #include "CFigure.h"
 
 #include <algorithm>
+#include <string>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
+
+typedef CString(*LPGETPLUGINFIGURENAME)();
+typedef CFigure* (*LPGETPLUGINFIGURE)();
+typedef char(*LPGETPLUGINCONTROLBUTTON)();
 
 // CPaintMFCView
 
@@ -77,9 +82,26 @@ void CPaintMFCView::OnDraw(CDC* pDC)
 	CBitmap* pOldBitmap = memDC.SelectObject(&bitmap);
 	memDC.FillSolidRect(&rect, RGB(255, 255, 255));
 
-	memDC.TextOut(10, 10, L"R - Прямоугольник");
-	memDC.TextOut(10, 30, L"C - Эллипс");
-	memDC.TextOut(10, 50, L"T - Треугольник");
+	int controlesCount = 0;
+	for (auto pluginInfo : pDoc->dlls) {
+		LPGETPLUGINCONTROLBUTTON GetPluginControlButton = (LPGETPLUGINCONTROLBUTTON)GetProcAddress(pluginInfo.second, "GetPluginControlButton");
+		if (GetPluginControlButton == NULL)
+			continue;
+
+		char controlButton = GetPluginControlButton();
+
+		LPGETPLUGINFIGURENAME GetPluginFigureName = (LPGETPLUGINFIGURENAME)GetProcAddress(pluginInfo.second, "GetPluginFigureName");
+		if (GetPluginFigureName == NULL)
+			continue;
+
+		CString pluginFigureName = GetPluginFigureName();
+
+		CString textOutput;
+		textOutput.Format(L"%s - ", CString(controlButton));
+		textOutput += pluginFigureName;
+		memDC.TextOutW(10, 10 + 20 * controlesCount, textOutput);
+		controlesCount++;
+	}
 
 	// TODO: add draw code for native data here
 	for (int i = 0; i < pDoc->m_figures.GetCount(); i++) {
@@ -148,14 +170,38 @@ void CPaintMFCView::OnLButtonDown(UINT nFlags, CPoint point)
 		m_initialFigureY = figureInProgress->y;
 	}
 	else {
-		if (this->figureType == 'R') {
-			this->figureInProgress = new CRectangle();
-		}
-		else if (this->figureType == 'C') {
-			this->figureInProgress = new CCircle();
-		}
-		else if (this->figureType == 'T') {
-			this->figureInProgress = new CTriangle();
+		CPaintMFCDoc* pDoc = GetDocument();
+		ASSERT_VALID(pDoc);
+		if (!pDoc)
+			return;
+
+		for (auto pluginInfo : pDoc->dlls) {
+			LPGETPLUGINCONTROLBUTTON GetPluginControlButton = (LPGETPLUGINCONTROLBUTTON)GetProcAddress(pluginInfo.second, "GetPluginControlButton");
+			if (GetPluginControlButton == NULL)
+				continue;
+
+			HMODULE activeModule = pluginInfo.second;
+
+			if (activeModule == NULL)
+			{
+				AfxMessageBox(L"Bad Figure number, try again");
+				continue;
+			}
+
+			if (this->figureType == ' ') {
+				this->figureType = GetPluginControlButton();
+			}
+
+			if (this->figureType == GetPluginControlButton()) {
+				LPGETPLUGINFIGURE GetPlugginFigure = (LPGETPLUGINFIGURE)GetProcAddress(activeModule, "GetPluginFigure");
+				if (GetPlugginFigure == NULL)
+				{
+					AfxMessageBox(L"Bad Figure number, try again");
+					continue;
+				}
+
+				this->figureInProgress = GetPlugginFigure();
+			}
 		}
 
 		this->figureInProgress->x = point.x;
@@ -258,15 +304,16 @@ void CPaintMFCView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 		delete fig;
 		Invalidate();
 	}
+	
+	auto pDoc = GetDocument();
+	for (auto pluginInfo : pDoc->dlls) {
+		LPGETPLUGINCONTROLBUTTON GetPluginControlButton = (LPGETPLUGINCONTROLBUTTON)GetProcAddress(pluginInfo.second, "GetPluginControlButton");
+		if (GetPluginControlButton == NULL)
+			continue;
 
-	if (nChar == 'R') {
-		this->figureType = 'R';
-	}
-	else if (nChar == 'C') {
-		this->figureType = 'C';
-	}
-	else if (nChar == 'T') {
-		this->figureType = 'T';
+		if (nChar == GetPluginControlButton()) {
+			this->figureType = GetPluginControlButton();
+		}
 	}
 
 	CView::OnKeyUp(nChar, nRepCnt, nFlags);

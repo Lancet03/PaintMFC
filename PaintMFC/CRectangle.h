@@ -3,7 +3,9 @@
 
 class CRectangle : public CFigure {
 public:
-	CRectangle() : CFigure(1) {};
+	CRectangle() : CFigure(L"Rectangle") {};
+	virtual ~CRectangle() {};
 	bool PtInFig(int x, int y) override;
 	void DrawSelf(CDC* pDC) override;
+	
 };

@@ -1,0 +1,8 @@
+; CirclePlugin.def : Declares the module parameters for the DLL.
+
+LIBRARY CirclePlugin
+
+EXPORTS
+    GetPluginFigureName
+    GetPluginFigure
+    GetPluginControlButton

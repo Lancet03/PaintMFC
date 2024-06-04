@@ -6,6 +6,9 @@
 #pragma once
 #include "CFigure.h"
 
+#include <vector>
+#include <utility>
+
 class CPaintMFCDoc : public CDocument
 {
 protected: // create from serialization only
@@ -15,6 +18,7 @@ protected: // create from serialization only
 // Attributes
 public:
 	CArray<CFigure*> m_figures;
+	std::vector<std::pair<int, HMODULE>> dlls;
 // Operations
 public:
 

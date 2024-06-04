@@ -39,7 +39,7 @@ protected:
 	CPoint m_initialCursorPos;
 	int m_initialFigureX;
 	int m_initialFigureY;
-	char figureType = 'R';
+	char figureType = ' ';
 	CFigure* figureInProgress;
 	BOOL m_bDrawInProgress = FALSE;
 
