@@ -12,6 +12,7 @@
 
 #include "PaintMFCDoc.h"
 #include "CRectangle.h"
+#include "CCircle.h"
 
 #include <propkey.h>
 
@@ -64,6 +65,7 @@ void CPaintMFCDoc::Serialize(CArchive& ar)
 		num = m_figures.GetCount();
 		ar << num;
 		for (int i = 0; i < num; i++) {
+			ar << m_figures[i]->figureType;
 			ar << m_figures[i]->x;
 			ar << m_figures[i]->y;
 			ar << m_figures[i]->width;
@@ -75,7 +77,18 @@ void CPaintMFCDoc::Serialize(CArchive& ar)
 		// TODO: add loading code here
 		ar >> num;
 		for (int i = 0; i < num; i++) {
-			CFigure* r = new CRectangle();
+			CFigure* r;
+			int figType;
+			ar >> figType;
+			if (figType == 1) {
+				r = new CRectangle();
+			}
+			else if (figType == 2) {
+				r = new CCircle();
+			}
+			else {
+				r = new CRectangle();
+			}
 			ar >> r->x;
 			ar >> r->y;
 			ar >> r->width;

@@ -2,8 +2,8 @@
 
 #include "CFigure.h"
 
-CFigure::CFigure() {
-
+CFigure::CFigure(int figureType) {
+	this->figureType = figureType;
 }
 
 CFigure::~CFigure() {

@@ -5,7 +5,6 @@
 
 #include <algorithm>
 
-
 bool CRectangle::PtInFig(int x, int y) {
 	RECT r;
 	r.left = this->x;
