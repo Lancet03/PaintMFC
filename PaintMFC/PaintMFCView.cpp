@@ -35,6 +35,7 @@ BEGIN_MESSAGE_MAP(CPaintMFCView, CView)
 	ON_WM_MOUSEMOVE()
 	ON_WM_RBUTTONDOWN()
 	ON_WM_KEYUP()
+	ON_WM_ERASEBKGND()
 END_MESSAGE_MAP()
 
 // CPaintMFCView construction/destruction
@@ -66,9 +67,19 @@ void CPaintMFCView::OnDraw(CDC* pDC)
 	if (!pDoc)
 		return;
 
-	pDC->TextOut(10, 10, L"R - Прямоугольник");
-	pDC->TextOut(10, 30, L"C - Элипс");
-	pDC->TextOut(10, 50, L"T - Треугольник");
+	CDC memDC;
+	memDC.CreateCompatibleDC(pDC);
+	CRect rect;
+	GetClientRect(&rect);
+
+	CBitmap bitmap;
+	bitmap.CreateCompatibleBitmap(pDC, rect.Width(), rect.Height());
+	CBitmap* pOldBitmap = memDC.SelectObject(&bitmap);
+	memDC.FillSolidRect(&rect, RGB(255, 255, 255));
+
+	memDC.TextOut(10, 10, L"R - Прямоугольник");
+	memDC.TextOut(10, 30, L"C - Эллипс");
+	memDC.TextOut(10, 50, L"T - Треугольник");
 
 	// TODO: add draw code for native data here
 	for (int i = 0; i < pDoc->m_figures.GetCount(); i++) {
@@ -77,21 +88,24 @@ void CPaintMFCView::OnDraw(CDC* pDC)
 
 		if (this->m_selected == i) {
 			pen.CreatePen(PS_SOLID, 2, RGB(255, 0, 0));
-			oldPen = pDC->SelectObject(&pen);
+			oldPen = memDC.SelectObject(&pen);
 		}
 
 		auto r = pDoc->m_figures.GetAt(i);
-		r->DrawSelf(pDC);
+		r->DrawSelf(&memDC);
 
 		if (oldPen != NULL) {
-			pDC->SelectObject(oldPen);
+			memDC.SelectObject(oldPen);
 			oldPen->DeleteObject();
 		}
 	}
 
 	if (this->m_bDrawInProgress) {
-		this->figureInProgress->DrawSelf(pDC);
+		this->figureInProgress->DrawSelf(&memDC);
 	}
+
+	pDC->BitBlt(0, 0, rect.Width(), rect.Height(), &memDC, 0, 0, SRCCOPY);
+	memDC.SelectObject(pOldBitmap);
 }
 
 
@@ -256,4 +270,12 @@ void CPaintMFCView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 	}
 
 	CView::OnKeyUp(nChar, nRepCnt, nFlags);
+}
+
+
+BOOL CPaintMFCView::OnEraseBkgnd(CDC* pDC)
+{
+	// TODO: Add your message handler code here and/or call default
+
+	return TRUE;
 }

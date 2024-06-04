@@ -52,6 +52,7 @@ public:
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags);
+	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 };
 
 #ifndef _DEBUG  // debug version in PaintMFCView.cpp
