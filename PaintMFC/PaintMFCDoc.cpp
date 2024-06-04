@@ -13,6 +13,7 @@
 #include "PaintMFCDoc.h"
 #include "CRectangle.h"
 #include "CCircle.h"
+#include "CTriangle.h"
 
 #include <propkey.h>
 
@@ -85,6 +86,9 @@ void CPaintMFCDoc::Serialize(CArchive& ar)
 			}
 			else if (figType == 2) {
 				r = new CCircle();
+			}
+			else if (figType == 3) {
+				r = new CTriangle();
 			}
 			else {
 				r = new CRectangle();

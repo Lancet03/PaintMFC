@@ -15,6 +15,7 @@
 
 #include "CRectangle.h"
 #include "CCircle.h"
+#include "CTriangle.h"
 #include "CFigure.h"
 
 #include <algorithm>
@@ -67,6 +68,7 @@ void CPaintMFCView::OnDraw(CDC* pDC)
 
 	pDC->TextOut(10, 10, L"R - Прямоугольник");
 	pDC->TextOut(10, 30, L"C - Элипс");
+	pDC->TextOut(10, 50, L"T - Треугольник");
 
 	// TODO: add draw code for native data here
 	for (int i = 0; i < pDoc->m_figures.GetCount(); i++) {
@@ -137,6 +139,9 @@ void CPaintMFCView::OnLButtonDown(UINT nFlags, CPoint point)
 		}
 		else if (this->figureType == 'C') {
 			this->figureInProgress = new CCircle();
+		}
+		else if (this->figureType == 'T') {
+			this->figureInProgress = new CTriangle();
 		}
 
 		this->figureInProgress->x = point.x;
@@ -245,6 +250,9 @@ void CPaintMFCView::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 	}
 	else if (nChar == 'C') {
 		this->figureType = 'C';
+	}
+	else if (nChar == 'T') {
+		this->figureType = 'T';
 	}
 
 	CView::OnKeyUp(nChar, nRepCnt, nFlags);

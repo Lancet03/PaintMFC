@@ -186,6 +186,7 @@
     <ClInclude Include="CCircle.h" />
     <ClInclude Include="CFigure.h" />
     <ClInclude Include="CRectangle.h" />
+    <ClInclude Include="CTriangle.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="PaintMFC.h" />
@@ -199,6 +200,7 @@
     <ClCompile Include="CCircle.cpp" />
     <ClCompile Include="CFigure.cpp" />
     <ClCompile Include="CRectangle.cpp" />
+    <ClCompile Include="CTriangle.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="PaintMFC.cpp" />
     <ClCompile Include="PaintMFCDoc.cpp" />
