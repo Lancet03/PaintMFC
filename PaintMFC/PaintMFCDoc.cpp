@@ -251,11 +251,20 @@ void CPaintMFCDoc::DeleteContents()
 {
 	// TODO: Add your specialized code here and/or call the base class
 	this->m_figures.RemoveAll();
-	//this->dlls.clear();
-	//for (auto dll : this->dlls)
-	//{
-	//	FreeLibrary(dll.second);
-	//}
+
 
 	CDocument::DeleteContents();
+}
+
+
+void CPaintMFCDoc::OnCloseDocument()
+{
+	// TODO: Add your specialized code here and/or call the base class
+	this->dlls.clear();
+	for (auto dll : this->dlls)
+	{
+		FreeLibrary(dll.second);
+	}
+
+	CDocument::OnCloseDocument();
 }

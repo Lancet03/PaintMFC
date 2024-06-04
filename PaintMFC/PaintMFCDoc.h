@@ -51,4 +51,5 @@ protected:
 #endif // SHARED_HANDLERS
 public:
 	virtual void DeleteContents();
+	virtual void OnCloseDocument();
 };
