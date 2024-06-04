@@ -11,9 +11,6 @@
 #endif
 
 #include "PaintMFCDoc.h"
-#include "CRectangle.h"
-//#include "CCircle.h"
-#include "CTriangle.h"
 
 #include <propkey.h>
 #include <string>

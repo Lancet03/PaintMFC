@@ -13,9 +13,6 @@
 #include "PaintMFCDoc.h"
 #include "PaintMFCView.h"
 
-#include "CRectangle.h"
-#include "CCircle.h"
-#include "CTriangle.h"
 #include "CFigure.h"
 
 #include <algorithm>

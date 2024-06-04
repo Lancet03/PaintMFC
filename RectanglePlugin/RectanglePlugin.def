@@ -1,0 +1,8 @@
+; RectanglePlugin.def : Declares the module parameters for the DLL.
+
+LIBRARY RectanglePlugin
+
+EXPORTS
+    GetPluginFigureName
+    GetPluginFigure
+    GetPluginControlButton
